@@ -1,0 +1,142 @@
+
+.bk-im {
+    background-image: url("../image/pexels-miguel-padrin-19670.jpg");
+    background-size: cover;
+}
+
+
+
+.container, .card, .tab-content {
+    background-color: rgb(255,255, 255, 0.5);
+    border-radius: 12px;
+}
+
+
+.card-img-top {
+    display: block;
+    align-items: center;
+    max-width: 100%;
+}
+
+.btn-outline {
+    border-radius: 12px;
+    transition: 200ms all ease-out;
+}
+.btn-outline:hover {
+    opacity: 1.2;
+    background-color: #35383d;
+    color: white;
+}
+
+.fa-type {
+    font-size: 32px;
+}
+
+.main-form {
+    font-size: 140px;
+    margin-left: 100px;
+    margin-top: 60px;
+    text-align: left;
+
+
+}
+
+
+
+#city-header {
+    display: inline;
+    left: 30px;
+}
+#title-location {
+    right:80px;
+}
+
+#description:first-letter {
+    text-transform: capitalize;
+}
+
+.p-main-form {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    position: relative;
+    top: 32px;
+    font-size: 24px;
+}
+
+
+.a-location {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-size: 28px;
+    text-align: center;
+    margin-top: 60px;
+    font-weight: 600;
+}
+
+
+
+.main-fr-icon {
+    width: 220px;
+    position: relative;
+    top: 10%;
+
+    
+}
+
+.main-card-img {
+    height: 400px;
+    opacity: 0.3;
+}
+.h2-main-form{
+    position: relative;
+    left: 53%;
+    bottom: 170px;
+    font-size: 72px;
+}
+
+.h2-degree {
+    display: inline;
+    position: relative;
+    left: 300px;
+    bottom: 190px;
+    font-size: 48px;
+}
+
+.h3-main-form {
+    position: relative;
+    left: 18%;
+    bottom: 110px;
+    font-size: 48px;
+
+}
+
+a{
+    text-decoration: none;
+    color: #35383d;
+}
+
+.section-2 {
+    position: relative;    
+    background-size: cover;
+    height: 400px;
+    
+    }
+.nav-pills {
+    --bs-nav-pills-link-active-bg: #35383d;
+
+}
+.nav {
+    --bs-nav-link-color: #35383d;
+}
+
+.container-table {
+   
+    border: 1px solid;
+    border-color: rgba(0, 0 ,0, 0.18);
+    font-size: 24px;
+    line-height: 60px;
+    border-radius: 12px;
+}
+
