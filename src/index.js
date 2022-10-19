@@ -287,7 +287,7 @@ function displayResultsMain(weather) {
     temperatureFeel.innerHTML = tempCelFeel;
 
     formatMainDate(currentLocalTime);
-    let hours = dates.hours;
+    let hours = Number(dates.hours);
     if (hours > 5 && hours < 21) {
         document.body.style.backgroundImage = "url('image/pexels-miguel-padrin-19670.jpg')";
     } else {
