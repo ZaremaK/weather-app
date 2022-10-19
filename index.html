@@ -1,14 +1,12 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <title>Weather</title>
     <meta charset="UTF-8" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"
           rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi"
           crossorigin="anonymous">
-    <link rel="stylesheet" href="style/itc-slider.css">
-   
-
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script src="https://kit.fontawesome.com/3f2473ae17.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="style/style.css" />
 </head>
@@ -18,14 +16,19 @@
     <div class="container">
         <nav class="navbar">
             <div class="container-fluid">
-                <i class="fa-solid fa-location-dot fa-type"></i>
-                <a class="navbar-brand align-text-left" id="city-header">Kiyv</a>
-                <button class="btn btn-outline" id="currentCity" type="submit">Current City</button>
-                <form class="d-flex" id="search-form" role="search">
-                    <i class="fa-solid fa-magnifying-glass fa-type"></i>
-                    <input class="form-control me-2" id="search-input" type="search" placeholder="Search" aria-label="Search">
-                    <button class="btn btn-outline" type="submit">Search</button>
-                </form>
+                <div>
+                    <i class="fa-solid fa-location-dot fa-type"></i>
+                    <a class="navbar-brand align-text-left" id="city-header">Kiyv</a>
+                </div>
+                <div class="d-flex" >
+                    <form class="d-flex flex-row" id="search-form" role="search">
+                        <i class="fa-solid fa-magnifying-glass fa-type"></i>
+                        <input class="form-control" id="search-input" type="search" placeholder="Search" aria-label="Search">
+                        <button class="btn btn-outline" type="submit">Search</button>
+                    </form>
+                    <button class="btn btn-outline " id="currentCity" type="submit">Current</button>
+                </div>
+
             </div>
         </nav>
         <div class="card">
@@ -50,231 +53,47 @@
                         </button>
                     </li>
                 </ul>
-                
+
             </div>
             <div class="section-2">
                 <div class="row">
                     <div class="col-6">
-                        <h1 class="main-form " id="temp-now">14</h1>
+                        <h1 class="main-form " id="temp-now"></h1>
                         <h2 class="h2-degree" id="celsiusDegree">
                             <a href="#">° C</a>
                         </h2>
                         <h2 class="h2-degree">|</h2>
                         <h2 class="h2-degree" id="fahrenheitDegree"><a href="#">° F</a></h2>
-                        <h2 class="h2-main-form" id="cityChange">Kyiv</h2>
+                        <h2 class="h2-main-form" id="cityChange"></h2>
 
-                        <h3 class="h3-main-form">09:36, 03 Oct, Mon</h3>
+                        <h3 class="h3-main-form"></h3>
                     </div>
                     <div class="col-3">
                         <ul class="p-main-form">
                             <li>
-                             <span id="description">Sun</span> 
+                                <span id="description"></span>
                             </li>
                             <li>
-                                Feels like  <span id="feelsLike">12</span>°
+                                Feels like  <span id="feelsLike"></span>°
                             </li>
                             <li>
-                                T.max <span id="tempMax">16</span>° / T.min <span id="tempMin">10</span>°
+                                T.max <span id="tempMax"></span>° / T.min <span id="tempMin"></span>°
                             </li>
                         </ul>
-                        
+
                     </div>
                     <div class="col-3">
-                        <img src="weather-oxygen-icon/weather-clear.png" class="card-img-top main-fr-icon" alt="weather">
+                        <img src="" class="main-fr-icon" id="main-icon" alt="weather">
                     </div>
                 </div>
             </div>
         </div>
         <div class="tab-content" id="pills-tabContent">
             <div class="tab-pane fade text-center" id="hourly-pane" role="tabpanel" aria-labelledby="hourly" tabindex="0">
-                <div class="slider" data-slider="itc-slider" data-loop="false">
-                    <div class="slider__wrapper">
-                        <div class="slider__items">
-                            <div class="slider__item">
-                                <div class="card h-100" id="t01">
-                                    <div class="header">
-                                        <h4 class="card-title">01:00</h4>
-                                    </div>
-                                    <img src="weather-oxygen-icon/weather-clear.png" class="card-img-top" alt="weather">
-                                    <div class="card-body">
-                                        <h1 class="card-text">14°</h1>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="slider__item">
-                                <div class="card h-100" id="t04">
-                                    <div class="header">
-                                        <h4 class="card-title">04:00</h4>
-                                    </div>
-                                    <img src="weather-oxygen-icon/weather-many-clouds.png" class="card-img-top" alt="weather">
-                                    <div class="card-body">
-                                        <h1 class="card-text">13°</h1>
-
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="slider__item">
-                                <div class="card h-100" id="t07">
-                                    <div class="header">
-                                        <h4 class="card-title">07:00</h4>
-                                    </div>
-                                    <img src="weather-oxygen-icon/weather-many-clouds.png" class="card-img-top" alt="weather">
-                                    <div class="card-body">
-                                        <h1 class="card-text">12°</h1>
-
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="slider__item">
-                                <div class="card h-100" id="t10">
-                                    <div class="header">
-                                        <h4 class="card-title">10:00</h4>
-                                    </div>
-                                    <img src="weather-oxygen-icon/weather-many-clouds.png" class="card-img-top" alt="weather">
-                                    <div class="card-body">
-                                        <h1 class="card-text">14°</h1>
-
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="slider__item">
-                                <div class="card h-100" id="t13">
-                                    <div class="header">
-                                        <h4 class="card-title">13:00</h4>
-                                    </div>
-                                    <img src="weather-oxygen-icon/weather-few-clouds.png" class="card-img-top" alt="weather">
-                                    <div class="card-body">
-                                        <h1 class="card-text">18°</h1>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="slider__item">
-                                <div class="card h-100" id="t16">
-                                    <div class="header">
-                                        <h4 class="card-title">16:00</h4>
-                                    </div>
-                                    <img src="weather-oxygen-icon/weather-few-clouds.png" class="card-img-top" alt="weather">
-                                    <div class="card-body">
-                                        <h1 class="card-text">22 °</h1>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="slider__item">
-                                <div class="card h-100" id="t19">
-                                    <div class="header">
-                                        <h4 class="card-title">19:00</h4>
-                                    </div>
-                                    <img src="weather-oxygen-icon/weather-clear.png" class="card-img-top" alt="weather">
-                                    <div class="card-body">
-                                        <h1 class="card-text">24 °</h1>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="slider__item">
-                                <div class="card h-100" id="t22">
-                                    <div class="header">
-                                        <h4 class="card-title">22:00</h4>
-                                    </div>
-                                    <img src="weather-oxygen-icon/weather-many-clouds.png" class="card-img-top" alt="weather">
-                                    <div class="card-body">
-                                        <h1 class="card-text">22 °</h1>
-
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <button class="slider__control" data-slide="prev"></button>
-                    <button class="slider__control" data-slide="next"></button>
-
-                </div>
+                <div class="forecast__wrapper" id="forecast-hourly"></div>
             </div>
             <div class="tab-pane fade text-center" id="daily-pane" role="tabpanel" aria-labelledby="daily" tabindex="0">
-                <div class="slider" data-slider="itc-slider" data-loop="false">
-                    <div class="slider__wrapper">
-                        <div class="slider__items">
-                            <div class="slider__item">
-                                <div class="card h-100" id="mon">
-                                    <div class="header">
-                                        <h4 class="card-title">Mon 03</h4>
-                                    </div>
-                                    <img src="weather-oxygen-icon/weather-many-clouds.png" class="card-img-top" alt="weather">
-                                    <div class="card-body">
-                                        <h1 class="card-text"><strong>14°</strong>/10°</h1>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="slider__item">
-                                <div class="card h-100" id="tur">
-                                    <div class="header">
-                                        <h4 class="card-title">Tue 04</h4>
-                                    </div>
-                                    <img src="weather-oxygen-icon/weather-many-clouds.png" class="card-img-top" alt="weather">
-                                    <div class="card-body">
-                                        <h1 class="card-text"><strong>13°</strong>/10°</h1>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="slider__item">
-                                <div class="card h-100" id="wen">
-                                    <div class="header">
-                                        <h4 class="card-title">Wen 05</h4>
-                                    </div>
-                                    <img src="weather-oxygen-icon/weather-many-clouds.png" class="card-img-top" alt="weather">
-                                    <div class="card-body">
-                                        <h1 class="card-text"><strong>12°</strong>/10°</h1>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="slider__item">
-                                <div class="card h-100" id="thu">
-                                    <div class="header">
-                                        <h4 class="card-title">Thu 06</h4>
-                                    </div>
-                                    <img src="weather-oxygen-icon/weather-many-clouds.png" class="card-img-top" alt="weather">
-                                    <div class="card-body">
-                                        <h1 class="card-text"><strong>14°</strong>/10°</h1>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="slider__item">
-                                <div class="card h-100" id="fri">
-                                    <div class="header">
-                                        <h4 class="card-title">Fri 07</h4>
-                                    </div>
-                                    <img src="weather-oxygen-icon/weather-many-clouds.png" class="card-img-top" alt="weather">
-                                    <div class="card-body">
-                                        <h1 class="card-text"><strong>18°</strong>/12°</h1>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="slider__item">
-                                <div class="card h-100" id="sat">
-                                    <div class="header">
-                                        <h4 class="card-title">Sat 08</h4>
-                                    </div>
-                                    <img src="weather-oxygen-icon/weather-many-clouds.png" class="card-img-top" alt="weather">
-                                    <div class="card-body">
-                                        <h1 class="card-text"><strong>22°</strong>/14°</h1>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="slider__item">
-                                <div class="card h-100" id="sun">
-                                    <div class="header">
-                                        <h4 class="card-title">Sun 09</h4>
-                                    </div>
-                                    <img src="weather-oxygen-icon/weather-many-clouds.png" class="card-img-top" alt="weather">
-                                    <div class="card-body">
-                                        <h1 class="card-text"><strong>24°</strong>/16°</h1>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <button class="slider__control" data-slide="prev"></button>
-                    <button class="slider__control" data-slide="next"></button>
-                </div>
+                <div class="forecast__wrapper" id="forecast-dayly"></div>
             </div>
             <div class="tab-pane fade show active " id="details-pane" role="tabpanel" aria-labelledby="details" tabindex="0">
                 <table class="table table-borderless align-middle ">
@@ -287,15 +106,15 @@
                         </tr>
                         <tr>
                             <td>Wind gusts</td>
-                            <td><span id="windGusts">20</span> km/h</td>
+                            <td><span id="windGusts"></span> km/h</td>
                             <td>Sunset</td>
                             <td><span id="sunset"></span></td>
                         </tr>
                         <tr>
                             <td>Humidity</td>
-                            <td><span id="humidity">60</span>%</td>
+                            <td><span id="humidity"></span>%</td>
                             <td>Cloudiness</td>
-                            <td><span id="cloudiness">1</span> %</td>
+                            <td><span id="cloudiness"></span> %</td>
                         </tr>
                     </tbody>
                 </table>
@@ -307,7 +126,7 @@
                 <br />
                 <a href="http://www.kde.org/ ">Icons may be freely copied under the</a>
                 <a href="https://www.gnu.org/licenses/lgpl-3.0.txt">LGPLv3</a>
-               
+
             </p>
         </footer>
     </div>
@@ -317,7 +136,6 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"
             integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3" crossorigin="anonymous"></script>
 
-    <script src="src/itc-slider.js" defer></script>
     <script src="src/index.js"></script>
 </body>
 </html>

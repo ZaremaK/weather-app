@@ -2,21 +2,28 @@
 .bk-im {
     background-image: url("../image/pexels-miguel-padrin-19670.jpg");
     background-size: cover;
+    font-family: var(--bs-body-font-family);
+    font-size: var(--bs-body-font-size);
+    font-weight: var(--bs-body-font-weight);
 }
 
 
 
 .container, .card, .tab-content {
     background-color: rgb(255,255, 255, 0.5);
-    border-radius: 12px;
+   
 }
 
-
+#search-form {
+    display:inline;
+}
 .card-img-top {
     display: block;
     align-items: center;
     max-width: 100%;
 }
+
+
 
 .btn-outline {
     border-radius: 12px;
@@ -33,9 +40,9 @@
 }
 
 .main-form {
-    font-size: 140px;
-    margin-left: 100px;
-    margin-top: 60px;
+    font-size: 72px;
+    margin-left: 17%;
+    margin-top: 18%;
     text-align: left;
 
 
@@ -51,9 +58,7 @@
     right:80px;
 }
 
-#description:first-letter {
-    text-transform: capitalize;
-}
+
 
 .p-main-form {
     margin: 0;
@@ -61,18 +66,7 @@
     list-style: none;
     position: relative;
     top: 32px;
-    font-size: 24px;
-}
-
-
-.a-location {
-    margin: 0;
-    padding: 0;
-    list-style: none;
-    font-size: 28px;
-    text-align: center;
-    margin-top: 60px;
-    font-weight: 600;
+    font-size: 20px;
 }
 
 
@@ -91,25 +85,29 @@
 }
 .h2-main-form{
     position: relative;
-    left: 53%;
-    bottom: 170px;
-    font-size: 72px;
+    left: 47%;
+    bottom: 32%;
+    font-size: 52px;
 }
 
 .h2-degree {
     display: inline;
     position: relative;
-    left: 300px;
-    bottom: 190px;
-    font-size: 48px;
+    left: 47%;
+    bottom: 30%;
+    font-size: 32px;
 }
 
 .h3-main-form {
     position: relative;
     left: 18%;
-    bottom: 110px;
-    font-size: 48px;
+    bottom: 100px;
+    font-size: 32px;
+}
 
+
+.h3-main-form:first-letter {
+    text-transform: capitalize;
 }
 
 a{
@@ -131,12 +129,29 @@ a{
     --bs-nav-link-color: #35383d;
 }
 
+#pills-tabContent {
+    padding: 20px 10px;
+    border-radius: 0 0 12px 12px;
+}
+
+.forecast-weather:hover {
+    opacity: 1.2;
+    transition: all 200ms ease;
+    transform: scale(1.1);
+}
+
+.nav-item:hover {
+    opacity: 1.2;
+    background-color: #757a79;
+    color: white;
+    --bs-nav-link-hover-color: white;
+    border-radius: 0.375rem;
+}
+
 .container-table {
-   
-    border: 1px solid;
-    border-color: rgba(0, 0 ,0, 0.18);
-    font-size: 24px;
+    font-size: 1.1rem;
     line-height: 60px;
-    border-radius: 12px;
+    
+    font-weight: 500;
 }
 

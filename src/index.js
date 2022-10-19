@@ -1,12 +1,17 @@
+
+
 const api = {
     base: "https://api.openweathermap.org/data/2.5/",
-    key: "261be960710adff4cf2620414d0a38ed"
+    key: "261be960710adff4cf2620414d0a38ed",
+    forecast: "https://api.openweathermap.org/data/3.0/"
 }
 
 let dates;
 let apiUrl;
 let temps;
-
+let idIcon;
+let idIconMain;
+let weatherIcon;
 
 function formatMainDate(selectedDate) {
     let nowDate = new Date(selectedDate);
@@ -46,121 +51,138 @@ function formatMainDate(selectedDate) {
     if (hours < 10) {
         hours = `0${hours}`
     }
-    
+
     let mainDate = `${hours}:${minute}, ${date} ${month}, ${day} `;
-    dates = { mainDate: mainDate, hours: hours }
+    dates = { mainDate: mainDate, hours: hours, }
     return dates;
 }
 
-
-
-
-
+function formatDay(timestamp) {
+    let date = new Date(timestamp * 1000);
+    let day = date.getDay();
+    let days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+    return days[day];
+}
 
 function selectCity(event) {
-    let searchInput = document.querySelector("#search-input");
-
     event.preventDefault();
-
+    let searchInput = document.querySelector("#search-input");
     requestApi(searchInput.value)
-   
 }
-
-
-let searchForm = document.querySelector("#search-form");
-searchForm.addEventListener("submit", selectCity);
 
 function requestApi(query) {
-    apiUrl = `${api.base}weather?q=${query}&APPID=${api.key}`;
+    apiUrl = `${api.base}weather?q=${query}&units=metric&appid=${api.key}`;
     getResults();
 }
+
 function geolocation() {
     navigator.geolocation.getCurrentPosition(onSuccess)
 }
 
-let currentCity = document.querySelector("#currentCity");
-currentCity.addEventListener("click", geolocation);
-
 function onSuccess(position) {
     const { latitude, longitude } = position.coords;
-    apiUrl = `${api.base}weather?lat=${latitude}&lon=${longitude}&APPID=${api.key}`;
+    apiUrl = `${api.base}weather?lat=${latitude}&lon=${longitude}&appid=${api.key}&units=metric`;
     getResults();
 }
 
-async function getResults() {
-    fetch(apiUrl)
-        .then(weather => {
-            return weather.json();
-        }).then(displayResultsMain);
-    
+function getForecast(coordinates) {
+    //console.log(coordinates);
+    const latitude = coordinates.lat;
+    const longitude = coordinates.lon;
+    apiUrlForecast = `${api.forecast}onecall?lat=${latitude}&lon=${longitude}&exclude=minutely,alerts&units=metric&APPID=${api.key}`;
+    getResultsForecast();
 }
 
-function displayResultsMain(weather) {
-    console.log(weather);
-    const dateTime = new Date(weather.dt * 1000);
-    const toUtc = dateTime.getTime() + dateTime.getTimezoneOffset() * 60000;
-    const currentLocalTime = toUtc + 1000 * weather.timezone;
-    let sunriseTime = new Date(weather.sys.sunrise * 1000);
-    let sunsetTime = new Date(weather.sys.sunset * 1000);
-    let letLocalSunrise = sunriseTime.toLocaleTimeString();
-    let letLocalSunset = sunsetTime.toLocaleTimeString();
+async function getResults() {
+    axios.get(apiUrl).then(displayResultsMain);
+}
 
-    let city = document.querySelector("#cityChange");
-    let cityHeader = document.querySelector("#city-header");
-    let tempCel = `${Math.round(weather.main.temp - 273.15)}`;
-    let tempFar = `${Math.round((weather.main.temp - 273.15) * 1.8 + 32)}`;
-    let tempCelMax = `${Math.round(weather.main.temp_max - 273.15)}`;
-    let tempFarMax = `${Math.round((weather.main.temp_max - 273.15) * 1.8 + 32)}`;
-    let tempCelMin = `${Math.round(weather.main.temp_min - 273.15)}`;
-    let tempFarMin = `${Math.round((weather.main.temp_min - 273.15) * 1.8 + 32)}`;
-    let tempCelFeel = `${Math.round(weather.main.feels_like - 273.15)}`;
-    let tempFarFeel = `${Math.round((weather.main.feels_like - 273.15) * 1.8 + 32)}`;
+async function getResultsForecast() {
+    axios.get(apiUrlForecast).then(displayResultsForecast);
+}
 
-    let temp = document.querySelector('#temp-now');
-    let temperatureMin = document.querySelector("#tempMin");
-    let temperatureMax = document.querySelector("#tempMax");
-    let temperatureFeel = document.querySelector("#feelsLike");
-
-    let h3Main = document.querySelector(".h3-main-form");
-    let weatherIcon = document.querySelector(".main-fr-icon");
-    let descriptionElement = document.querySelector("#description");
-
-    let windElement = document.querySelector("#wind");
-    let windMainGusts = document.querySelector("#windGusts");
-    let sunriseElement = document.querySelector("#sunrise");
-    let sunsetElement = document.querySelector("#sunset");
-    let humidityElement = document.querySelector("#humidity");
-    let cloudinessElement = document.querySelector("#cloudiness");
-
-
-
-
-    city.innerHTML = `${weather.name}`;
-    cityHeader.innerHTML = `${weather.name}`;
-    temp.innerHTML = tempCel;
-    temperatureMax.innerHTML = tempCelMax;
-    temperatureMin.innerHTML = tempCelMin;
-    temperatureFeel.innerHTML = tempCelFeel;
+function displayResultsForecast(response) {
     
-    formatMainDate(currentLocalTime);
-    h3Main.innerHTML = dates.mainDate;
-    descriptionElement.innerHTML = `${weather.weather[0].description}`;
-    
-    windElement.innerHTML = `${Math.round(weather.wind.speed)}`;
-    windMainGusts.innerHTML = `${Math.round(weather.wind.gust)}`;
-    humidityElement.innerHTML = `${(weather.main.humidity)}`;
-    sunriseElement.innerHTML = letLocalSunrise;
-    sunsetElement.innerHTML = letLocalSunset;
-    cloudinessElement.innerHTML = `${Math.round(weather.clouds.all)}`;
+    const forecast = response.data.daily;
+
+    let forecastDailyElement = document.querySelector("#forecast-dayly");
+    let forecastDailyHTML = `<div class="row">`;
+
+    forecast.forEach(function (forecastDay, index) {
+        if (index < 6) {
+            let tempDailyMax = Math.round(forecastDay.temp.max);
+            let tempDailyMin = Math.round(forecastDay.temp.min);
+            getWeatherIcon(`${forecastDay.weather[0].id}`);
+            
+            forecastDailyHTML =
+                forecastDailyHTML +
+                `
+                <div class="col-2 forecast-weather">
+                    
+                        <div class="header">
+                            <h5>${formatDay(forecastDay.dt)}</h5>
+                        </div>
+                        <img src=${weatherIcon.src}
+                        class="card-img-top" id="img-daily"          
+                        alt="weather"
+                        width="42"
+                        />
+                        <div class="card-body">
+                            <span id="temp-daily-max"><strong>${tempDailyMax}
+                            &#176;</strong></span> <span id="temp-daily-min">/ ${tempDailyMin} &#176;</span>
+                        </div>
+
+                </div>
+                 `;
+        }
+    });
+
+    forecastDailyHTML = forecastDailyHTML + `</div>`;
+    forecastDailyElement.innerHTML = forecastDailyHTML;
+
+    const forecastHourly = response.data.hourly;
+    const forecastTimezone = `${response.data.timezone_offset}`;
+
+    let forecastHourlyElement = document.querySelector("#forecast-hourly");
+
+    let forecastHourlyHTML = `<div class="row">`;
+
+    for (var i = 0; i <= 20; i += 4) {
+            getWeatherIcon(forecastHourly[i].weather[0].id);
+        const dateTime = new Date(forecastHourly[i].dt * 1000);
+            const toUtc = dateTime.getTime() + dateTime.getTimezoneOffset() * 60000;
+            const currentLocalTime = toUtc + 1000 * forecastTimezone;
+
+            forecastHourlyHTML =
+                forecastHourlyHTML +
+                `
+      <div class="col-2 forecast-weather">
+        <div class="header">
+        <h5>${formatMainDate(currentLocalTime).hours}:00</h5></div>
+        <img src=${weatherIcon.src}
+          class="card-img-top" id="img-daily"          
+          alt="weather"
+          width="42"
+        />
+                    <div class="card-body">
+                        <span class="card-text" ><strong>${Math.round(
+                            forecastHourly[i].temp
+                )} &#176;</strong></span>
+                    </div>
+      </div>
+  `;
+        
+     }
 
 
+    forecastHourlyHTML = forecastHourlyHTML + `</div>`;
+    forecastHourlyElement.innerHTML = forecastHourlyHTML;
+}
 
-    let idIcon = `${weather.weather[0].id}`;
- 
+function getWeatherIcon(idIcon) {
     let time = dates.hours;
     if (time > 5 && time < 21) {
 
-        document.body.style.backgroundImage = "url('image/pexels-miguel-padrin-19670.jpg')";
         if (idIcon == 800) {
             weatherIcon.src = "weather-oxygen-icon/weather-clear.png";
         } else if (idIcon >= 200 && idIcon <= 232) {
@@ -187,49 +209,116 @@ function displayResultsMain(weather) {
             weatherIcon.src = "weather-oxygen-icon/weather-showers.png";
         }
     } else {
-        document.body.style.backgroundImage = "url('image/pexels-night.jpg')";
-            if (idIcon == 800) {
-                weatherIcon.src = "weather-oxygen-icon/weather-clear-night.png";
-            } else if (idIcon >= 200 && idIcon <= 232) {
-                weatherIcon.src = "weather-oxygen-icon/weather-storm-night.png";
-            } else if (idIcon >= 300 && idIcon <= 321) {
-                weatherIcon.src = "weather-oxygen-icon/weather-freezing-rain.png";
-            } else if ((idIcon >= 600 && idIcon <= 602) || (idIcon >= 620 && idIcon <= 622)) {
-                weatherIcon.src = "weather-oxygen-icon/weather-snow-scattered-night.png";
-            } else if (idIcon >= 611 && idIcon <= 616) {
-                weatherIcon.src = "weather-oxygen-icon/weather-snow-rain.png";
-            } else if ((idIcon >= 701 && idIcon <= 781) || ((idIcon == 511))) {
-                weatherIcon.src = "weather-oxygen-icon/weather-mist.png";
-            } else if (idIcon == 801) {
-                weatherIcon.src = "weather-oxygen-icon/weather-few-clouds-night.png";
-            } else if ((idIcon == 802) || (idIcon == 803)) {
-                weatherIcon.src = "weather-oxygen-icon/weather-clouds-night.png";
-            } else if (idIcon == 804) {
-                weatherIcon.src = "weather-oxygen-icon/weather-many-clouds.png";
-            } else if ((idIcon == 500) || (idIcon == 520)) {
+        
+        if (idIcon == 800) {
+            weatherIcon.src = "weather-oxygen-icon/weather-clear-night.png";
+        } else if (idIcon >= 200 && idIcon <= 232) {
+            weatherIcon.src = "weather-oxygen-icon/weather-storm-night.png";
+        } else if (idIcon >= 300 && idIcon <= 321) {
+            weatherIcon.src = "weather-oxygen-icon/weather-freezing-rain.png";
+        } else if ((idIcon >= 600 && idIcon <= 602) || (idIcon >= 620 && idIcon <= 622)) {
+            weatherIcon.src = "weather-oxygen-icon/weather-snow-scattered-night.png";
+        } else if (idIcon >= 611 && idIcon <= 616) {
+            weatherIcon.src = "weather-oxygen-icon/weather-snow-rain.png";
+        } else if ((idIcon >= 701 && idIcon <= 781) || ((idIcon == 511))) {
+            weatherIcon.src = "weather-oxygen-icon/weather-mist.png";
+        } else if (idIcon == 801) {
+            weatherIcon.src = "weather-oxygen-icon/weather-few-clouds-night.png";
+        } else if ((idIcon == 802) || (idIcon == 803)) {
+            weatherIcon.src = "weather-oxygen-icon/weather-clouds-night.png";
+        } else if (idIcon == 804) {
+            weatherIcon.src = "weather-oxygen-icon/weather-many-clouds.png";
+        } else if ((idIcon == 500) || (idIcon == 520)) {
             weatherIcon.src = "weather-oxygen-icon/weather-showers-scattered-night.png";
-            } else if (idIcon >= 501 && idIcon <= 504) {
-                weatherIcon.src = "weather-oxygen-icon/weather-showers-night.png";
-            } else if (idIcon >= 521 && idIcon <= 531) {
-                weatherIcon.src = "weather-oxygen-icon/weather-showers.png";
+        } else if (idIcon >= 501 && idIcon <= 504) {
+            weatherIcon.src = "weather-oxygen-icon/weather-showers-night.png";
+        } else if (idIcon >= 521 && idIcon <= 531) {
+            weatherIcon.src = "weather-oxygen-icon/weather-showers.png";
+        }
+
     }
-     
+    return weatherIcon.src;
+}
+
+function displayResultsMain(weather) {
+    //console.log(weather);
+    const dateTime = new Date(weather.data.dt * 1000);
+    const toUtc = dateTime.getTime() + dateTime.getTimezoneOffset() * 60000;
+    const currentLocalTime = toUtc + 1000 * weather.data.timezone;
+    let sunriseTime = new Date(weather.data.sys.sunrise * 1000);
+    let sunsetTime = new Date(weather.data.sys.sunset * 1000);
+    let letLocalSunrise = sunriseTime.toLocaleTimeString();
+    let letLocalSunset = sunsetTime.toLocaleTimeString();
+
+    let city = document.querySelector("#cityChange");
+    let cityHeader = document.querySelector("#city-header");
+
+    let tempCel = `${Math.round(weather.data.main.temp)}`;
+    let tempCelMax = `${Math.round(weather.data.main.temp_max)}`;
+    let tempCelMin = `${Math.round(weather.data.main.temp_min)}`;
+    let tempCelFeel = `${Math.round(weather.data.main.feels_like)}`;
+
+
+    let temp = document.querySelector('#temp-now');
+    let temperatureMin = document.querySelector("#tempMin");
+    let temperatureMax = document.querySelector("#tempMax");
+    let temperatureFeel = document.querySelector("#feelsLike");
+
+    let h3Main = document.querySelector(".h3-main-form");
+
+    let descriptionElement = document.querySelector("#description");
+
+    let windElement = document.querySelector("#wind");
+    let windMainGusts = document.querySelector("#windGusts");
+    let sunriseElement = document.querySelector("#sunrise");
+    let sunsetElement = document.querySelector("#sunset");
+    let humidityElement = document.querySelector("#humidity");
+    let cloudinessElement = document.querySelector("#cloudiness");
+
+
+
+
+    city.innerHTML = `${weather.data.name}`;
+    cityHeader.innerHTML = `${weather.data.name}`;
+
+    temp.innerHTML = tempCel;
+    temperatureMax.innerHTML = tempCelMax;
+    temperatureMin.innerHTML = tempCelMin;
+    temperatureFeel.innerHTML = tempCelFeel;
+
+    formatMainDate(currentLocalTime);
+    let hours = dates.hours;
+    if (hours > 5 && hours < 21) {
+        document.body.style.backgroundImage = "url('image/pexels-miguel-padrin-19670.jpg')";
+    } else {
+        document.body.style.backgroundImage = "url('image/pexels-night.jpg')";
     }
-          
+    h3Main.innerHTML = dates.mainDate;
+    descriptionElement.innerHTML = `${weather.data.weather[0].description}`;
 
-    weatherIcon.innerHTML = weatherIcon.src;
+    windElement.innerHTML = `${Math.round(weather.data.wind.speed)}`;
+    windMainGusts.innerHTML = `${Math.round(weather.data.wind.gust)}`;
+    humidityElement.innerHTML = `${(weather.data.main.humidity)}`;
+    sunriseElement.innerHTML = letLocalSunrise;
+    sunsetElement.innerHTML = letLocalSunset;
+    cloudinessElement.innerHTML = `${Math.round(weather.data.clouds.all)}`;
 
 
+   
+
+    getForecast(weather.data.coord);
+    idIconMain =`${ weather.data.weather[0].id }`;
+    getWeatherIcon(idIconMain);
+    console.log(getWeatherIcon(idIconMain));
 
     temps = {
-        tempCel: tempCel, tempFar: tempFar, tempCelMax: tempCelMax, tempFarMax: tempFarMax,
-        tempCelMin: tempCelMin, tempFarMin: tempFarMin, tempCelFeel: tempCelFeel,
-        tempFarFeel: tempFarFeel
+        tempCel: tempCel, tempCelMax: tempCelMax, 
+        tempCelMin: tempCelMin, tempCelFeel: tempCelFeel
     }
     return temps;
-
-
 }
+
+
 
 function convertTempCel(event) {
     event.preventDefault();
@@ -249,16 +338,29 @@ function convertTempFar(event) {
     let temperatureFarMin = document.querySelector("#tempMin");
     let temperatureFarMax = document.querySelector("#tempMax");
     let temperatureFarFeel = document.querySelector("#feelsLike");
-    temperature.innerHTML = temps.tempFar;
-    temperatureFarMax.innerHTML = temps.tempFarMax;
-    temperatureFarMin.innerHTML = temps.tempFarMin;
-    temperatureFarFeel.innerHTML = temps.tempFarFeel;
-
+    let temperatureFarMaxDaily = document.querySelector("#temp-daily-max");
+    temperature.innerHTML = Math.round((temps.tempCel) * 1.8 + 32);
+    temperatureFarMax.innerHTML = Math.round((temps.tempCelMax) * 1.8 + 32);
+    temperatureFarMin.innerHTML = Math.round((temps.tempCelMin) * 1.8 + 32); 
+    temperatureFarFeel.innerHTML = Math.round((temps.tempCelFeel) * 1.8 + 32);
+    temperatureFarMaxDaily.innerHTML = Math.round((tempDailyMax) * 1.8 + 32);
 }
 
+let searchForm = document.querySelector("#search-form");
+searchForm.addEventListener("submit", selectCity);
+
+let currentCity = document.querySelector("#currentCity");
+currentCity.addEventListener("click", geolocation);
+
+
+weatherIcon = document.querySelector(".main-fr-icon");
+weatherIcon.innerHTML = getWeatherIcon;
 
 let changeTempCel = document.querySelector("#celsiusDegree");
 changeTempCel.addEventListener("click", convertTempCel);
 let changeTempFar = document.querySelector("#fahrenheitDegree");
 changeTempFar.addEventListener("click", convertTempFar);
+
+
+requestApi("Kyiv");
 
