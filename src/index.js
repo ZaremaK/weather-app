@@ -180,7 +180,7 @@ function displayResultsForecast(response) {
 }
 
 function getWeatherIcon(idIcon) {
-    let time = dates.hours;
+    let time = Number(dates.hours);
     if (time > 5 && time < 21) {
 
         if (idIcon == 800) {
