@@ -275,7 +275,7 @@ function getWeatherIcon(idIcon) {
         } else if ((idIcon >= 701 && idIcon <= 781) || ((idIcon == 511))) {
             weatherIcon = "weather-oxygen-icon/weather-mist.png";
         } else if (idIcon == 801) {
-            weatherIconc = "weather-oxygen-icon/weather-few-clouds.png";
+            weatherIcon = "weather-oxygen-icon/weather-few-clouds.png";
         } else if ((idIcon == 802) || (idIcon == 803)) {
             weatherIcon = "weather-oxygen-icon/weather-clouds.png";
         } else if (idIcon == 804) {
