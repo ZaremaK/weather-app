@@ -101,145 +101,6 @@ async function getResultsForecast() {
     axios.get(apiUrlForecast).then(displayResultsForecast);
 }
 
-function displayResultsForecast(response) {
-    
-    const forecast = response.data.daily;
-
-    let forecastDailyElement = document.querySelector("#forecast-dayly");
-    let forecastDailyHTML = `<div class="row">`;
-
-    forecast.forEach(function (forecastDay, index) {
-        if (index < 6) {
-            let tempDailyMax = Math.round(forecastDay.temp.max);
-            let tempDailyMin = Math.round(forecastDay.temp.min);
-            getWeatherIcon(`${forecastDay.weather[0].id}`);
-            
-            forecastDailyHTML =
-                forecastDailyHTML +
-                `
-                <div class="col-2 forecast-weather">
-                    
-                        <div class="header">
-                            <h5>${formatDay(forecastDay.dt)}</h5>
-                        </div>
-                        <img src=${weatherIcon.src}
-                        class="card-img-top" id="img-daily"          
-                        alt="weather"
-                        width="42"
-                        />
-                        <div class="card-body">
-                            <span id="temp-daily-max"><strong>${tempDailyMax}
-                            &#176;</strong></span> <span id="temp-daily-min">/ ${tempDailyMin} &#176;</span>
-                        </div>
-
-                </div>
-                 `;
-        }
-    });
-
-    forecastDailyHTML = forecastDailyHTML + `</div>`;
-    forecastDailyElement.innerHTML = forecastDailyHTML;
-
-    const forecastHourly = response.data.hourly;
-    const forecastTimezone = `${response.data.timezone_offset}`;
-
-    let forecastHourlyElement = document.querySelector("#forecast-hourly");
-
-    let forecastHourlyHTML = `<div class="row">`;
-
-    for (var i = 0; i <= 20; i += 4) {
-            getWeatherIcon(forecastHourly[i].weather[0].id);
-        const dateTime = new Date(forecastHourly[i].dt * 1000);
-            const toUtc = dateTime.getTime() + dateTime.getTimezoneOffset() * 60000;
-            const currentLocalTime = toUtc + 1000 * forecastTimezone;
-
-            forecastHourlyHTML =
-                forecastHourlyHTML +
-                `
-      <div class="col-2 forecast-weather">
-        <div class="header">
-        <h5>${formatMainDate(currentLocalTime).hours}:00</h5></div>
-        <img src=${weatherIcon.src}
-          class="card-img-top" id="img-daily"          
-          alt="weather"
-          width="42"
-        />
-                    <div class="card-body">
-                        <span class="card-text" ><strong>${Math.round(
-                            forecastHourly[i].temp
-                )} &#176;</strong></span>
-                    </div>
-      </div>
-  `;
-        
-     }
-
-
-    forecastHourlyHTML = forecastHourlyHTML + `</div>`;
-    forecastHourlyElement.innerHTML = forecastHourlyHTML;
-}
-
-function getWeatherIcon(idIcon) {
-    let time = Number(dates.hours);
-    if (time > 5 && time < 21) {
-
-        if (idIcon == 800) {
-            weatherIcon.src = "weather-oxygen-icon/weather-clear.png";
-        } else if (idIcon >= 200 && idIcon <= 232) {
-            weatherIcon.src = "weather-oxygen-icon/weather-storm-day.png";
-        } else if (idIcon >= 300 && idIcon <= 321) {
-            weatherIcon.src = "weather-oxygen-icon/weather-freezing-rain.png";
-        } else if ((idIcon >= 600 && idIcon <= 602) || (idIcon >= 620 && idIcon <= 622)) {
-            weatherIcon.src = "weather-oxygen-icon/weather-snow-scattered-day.png";
-        } else if (idIcon >= 611 && idIcon <= 616) {
-            weatherIcon.src = "weather-oxygen-icon/weather-snow-rain.png";
-        } else if ((idIcon >= 701 && idIcon <= 781) || ((idIcon == 511))) {
-            weatherIcon.src = "weather-oxygen-icon/weather-mist.png";
-        } else if (idIcon == 801) {
-            weatherIcon.src = "weather-oxygen-icon/weather-few-clouds.png";
-        } else if ((idIcon == 802) || (idIcon == 803)) {
-            weatherIcon.src = "weather-oxygen-icon/weather-clouds.png";
-        } else if (idIcon == 804) {
-            weatherIcon.src = "weather-oxygen-icon/weather-many-clouds.png";
-        } else if ((idIcon == 500) || (idIcon == 520)) {
-            weatherIcon.src = "weather-oxygen-icon/weather-showers-scattered-day.png";
-        } else if (idIcon >= 501 && idIcon <= 504) {
-            weatherIcon.src = "weather-oxygen-icon/weather-showers-day.png";
-        } else if (idIcon >= 521 && idIcon <= 531) {
-            weatherIcon.src = "weather-oxygen-icon/weather-showers.png";
-        }
-    } else {
-        
-        if (idIcon == 800) {
-            weatherIcon.src = "weather-oxygen-icon/weather-clear-night.png";
-        } else if (idIcon >= 200 && idIcon <= 232) {
-            weatherIcon.src = "weather-oxygen-icon/weather-storm-night.png";
-        } else if (idIcon >= 300 && idIcon <= 321) {
-            weatherIcon.src = "weather-oxygen-icon/weather-freezing-rain.png";
-        } else if ((idIcon >= 600 && idIcon <= 602) || (idIcon >= 620 && idIcon <= 622)) {
-            weatherIcon.src = "weather-oxygen-icon/weather-snow-scattered-night.png";
-        } else if (idIcon >= 611 && idIcon <= 616) {
-            weatherIcon.src = "weather-oxygen-icon/weather-snow-rain.png";
-        } else if ((idIcon >= 701 && idIcon <= 781) || ((idIcon == 511))) {
-            weatherIcon.src = "weather-oxygen-icon/weather-mist.png";
-        } else if (idIcon == 801) {
-            weatherIcon.src = "weather-oxygen-icon/weather-few-clouds-night.png";
-        } else if ((idIcon == 802) || (idIcon == 803)) {
-            weatherIcon.src = "weather-oxygen-icon/weather-clouds-night.png";
-        } else if (idIcon == 804) {
-            weatherIcon.src = "weather-oxygen-icon/weather-many-clouds.png";
-        } else if ((idIcon == 500) || (idIcon == 520)) {
-            weatherIcon.src = "weather-oxygen-icon/weather-showers-scattered-night.png";
-        } else if (idIcon >= 501 && idIcon <= 504) {
-            weatherIcon.src = "weather-oxygen-icon/weather-showers-night.png";
-        } else if (idIcon >= 521 && idIcon <= 531) {
-            weatherIcon.src = "weather-oxygen-icon/weather-showers.png";
-        }
-
-    }
-    return weatherIcon.src;
-}
-
 function displayResultsMain(weather) {
     //console.log(weather);
     const dateTime = new Date(weather.data.dt * 1000);
@@ -307,9 +168,10 @@ function displayResultsMain(weather) {
    
 
     getForecast(weather.data.coord);
-    idIconMain =`${ weather.data.weather[0].id }`;
-    getWeatherIcon(idIconMain);
+    
+    let mainIcon = getWeatherIcon(`${weather.data.weather[0].id}`);
     console.log(getWeatherIcon(idIconMain));
+    document.querySelector("#main-icon").innerHTML = `<img src=${mainIcon} class="main-fr-icon" alt = "weather" />`;
 
     temps = {
         tempCel: tempCel, tempCelMax: tempCelMax, 
@@ -317,6 +179,147 @@ function displayResultsMain(weather) {
     }
     return temps;
 }
+
+function displayResultsForecast(response) {
+    
+    const forecast = response.data.daily;
+
+    let forecastDailyElement = document.querySelector("#forecast-dayly");
+    let forecastDailyHTML = `<div class="row">`;
+
+    forecast.forEach(function (forecastDay, index) {
+        if (index < 6) {
+            let tempDailyMax = Math.round(forecastDay.temp.max);
+            let tempDailyMin = Math.round(forecastDay.temp.min);
+            getWeatherIcon(`${forecastDay.weather[0].id}`);
+            
+            forecastDailyHTML =
+                forecastDailyHTML +
+                `
+                <div class="col-2 forecast-weather">
+                    
+                        <div class="header">
+                            <h5>${formatDay(forecastDay.dt)}</h5>
+                        </div>
+                        <img src=${weatherIcon}
+                        class="card-img-top" id="img-daily"          
+                        alt="weather"
+                        width="42"
+                        />
+                        <div class="card-body">
+                            <span id="temp-daily-max"><strong>${tempDailyMax}
+                            &#176;</strong></span> <span id="temp-daily-min">/ ${tempDailyMin} &#176;</span>
+                        </div>
+
+                </div>
+                 `;
+        }
+    });
+
+    forecastDailyHTML = forecastDailyHTML + `</div>`;
+    forecastDailyElement.innerHTML = forecastDailyHTML;
+
+    const forecastHourly = response.data.hourly;
+    const forecastTimezone = `${response.data.timezone_offset}`;
+
+    let forecastHourlyElement = document.querySelector("#forecast-hourly");
+
+    let forecastHourlyHTML = `<div class="row">`;
+
+    for (var i = 0; i <= 20; i += 4) {
+            getWeatherIcon(forecastHourly[i].weather[0].id);
+        const dateTime = new Date(forecastHourly[i].dt * 1000);
+            const toUtc = dateTime.getTime() + dateTime.getTimezoneOffset() * 60000;
+            const currentLocalTime = toUtc + 1000 * forecastTimezone;
+
+            forecastHourlyHTML =
+                forecastHourlyHTML +
+                `
+      <div class="col-2 forecast-weather">
+        <div class="header">
+        <h5>${formatMainDate(currentLocalTime).hours}:00</h5></div>
+        <img src=${weatherIcon}
+          class="card-img-top" id="img-daily"          
+          alt="weather"
+          width="42"
+        />
+                    <div class="card-body">
+                        <span class="card-text" ><strong>${Math.round(
+                            forecastHourly[i].temp
+                )} &#176;</strong></span>
+                    </div>
+      </div>
+  `;
+        
+     }
+
+
+    forecastHourlyHTML = forecastHourlyHTML + `</div>`;
+    forecastHourlyElement.innerHTML = forecastHourlyHTML;
+}
+
+function getWeatherIcon(idIcon) {
+    let time = Number(dates.hours);
+    if (time > 5 && time < 21) {
+
+        if (idIcon == 800) {
+            weatherIcon = "weather-oxygen-icon/weather-clear.png";
+        } else if (idIcon >= 200 && idIcon <= 232) {
+            weatherIcon = "weather-oxygen-icon/weather-storm-day.png";
+        } else if (idIcon >= 300 && idIcon <= 321) {
+            weatherIcon = "weather-oxygen-icon/weather-freezing-rain.png";
+        } else if ((idIcon >= 600 && idIcon <= 602) || (idIcon >= 620 && idIcon <= 622)) {
+            weatherIcon = "weather-oxygen-icon/weather-snow-scattered-day.png";
+        } else if (idIcon >= 611 && idIcon <= 616) {
+            weatherIcon = "weather-oxygen-icon/weather-snow-rain.png";
+        } else if ((idIcon >= 701 && idIcon <= 781) || ((idIcon == 511))) {
+            weatherIcon = "weather-oxygen-icon/weather-mist.png";
+        } else if (idIcon == 801) {
+            weatherIconc = "weather-oxygen-icon/weather-few-clouds.png";
+        } else if ((idIcon == 802) || (idIcon == 803)) {
+            weatherIcon = "weather-oxygen-icon/weather-clouds.png";
+        } else if (idIcon == 804) {
+            weatherIcon = "weather-oxygen-icon/weather-many-clouds.png";
+        } else if ((idIcon == 500) || (idIcon == 520)) {
+            weatherIcon = "weather-oxygen-icon/weather-showers-scattered-day.png";
+        } else if (idIcon >= 501 && idIcon <= 504) {
+            weatherIcon = "weather-oxygen-icon/weather-showers-day.png";
+        } else if (idIcon >= 521 && idIcon <= 531) {
+            weatherIcon = "weather-oxygen-icon/weather-showers.png";
+        }
+    } else {
+        
+        if (idIcon == 800) {
+            weatherIcon = "weather-oxygen-icon/weather-clear-night.png";
+        } else if (idIcon >= 200 && idIcon <= 232) {
+            weatherIcon = "weather-oxygen-icon/weather-storm-night.png";
+        } else if (idIcon >= 300 && idIcon <= 321) {
+            weatherIcon = "weather-oxygen-icon/weather-freezing-rain.png";
+        } else if ((idIcon >= 600 && idIcon <= 602) || (idIcon >= 620 && idIcon <= 622)) {
+            weatherIcon = "weather-oxygen-icon/weather-snow-scattered-night.png";
+        } else if (idIcon >= 611 && idIcon <= 616) {
+            weatherIcon.src = "weather-oxygen-icon/weather-snow-rain.png";
+        } else if ((idIcon >= 701 && idIcon <= 781) || ((idIcon == 511))) {
+            weatherIcon = "weather-oxygen-icon/weather-mist.png";
+        } else if (idIcon == 801) {
+            weatherIcon = "weather-oxygen-icon/weather-few-clouds-night.png";
+        } else if ((idIcon == 802) || (idIcon == 803)) {
+            weatherIcon = "weather-oxygen-icon/weather-clouds-night.png";
+        } else if (idIcon == 804) {
+            weatherIcon = "weather-oxygen-icon/weather-many-clouds.png";
+        } else if ((idIcon == 500) || (idIcon == 520)) {
+            weatherIcon = "weather-oxygen-icon/weather-showers-scattered-night.png";
+        } else if (idIcon >= 501 && idIcon <= 504) {
+            weatherIcon = "weather-oxygen-icon/weather-showers-night.png";
+        } else if (idIcon >= 521 && idIcon <= 531) {
+            weatherIcon = "weather-oxygen-icon/weather-showers.png";
+        }
+
+    }
+    return weatherIcon;
+}
+
+
 
 
 
@@ -353,8 +356,7 @@ let currentCity = document.querySelector("#currentCity");
 currentCity.addEventListener("click", geolocation);
 
 
-weatherIcon = document.querySelector(".main-fr-icon");
-weatherIcon.innerHTML = getWeatherIcon;
+
 
 let changeTempCel = document.querySelector("#celsiusDegree");
 changeTempCel.addEventListener("click", convertTempCel);
